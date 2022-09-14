@@ -23,4 +23,4 @@ int _isalpha(int c)
 
 	}
 
-}i
+}
