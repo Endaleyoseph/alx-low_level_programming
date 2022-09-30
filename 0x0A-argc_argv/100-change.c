@@ -20,7 +20,7 @@ int main(int argc, char **argv)
 	}
 	if (argv[1][0] == '-')
 	{
-		printf("%d", change);
+		printf("%d\n", change);
 		return (0);
 	}
 
