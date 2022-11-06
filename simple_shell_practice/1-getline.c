@@ -17,6 +17,7 @@ char *lsh_read_line(void)
 	{
 		if (feof(stdin))
 		{
+			printf("ctrl+D\n");
 			exit(EXIT_SUCCESS);
 		}
 		else
@@ -31,7 +32,7 @@ int main(void)
 {
 	char *buffer;
 
-	printf("$ ");
+	printf("#cisfun$ ");
 	buffer = lsh_read_line();
 	if (buffer == NULL)
 		return (-1);
