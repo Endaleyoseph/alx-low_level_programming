@@ -7,8 +7,10 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
 
 char **_strtok(char *av);
 char *read_line(void);
+int _execute(char **arg);
 
 #endif

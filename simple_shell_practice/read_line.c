@@ -9,7 +9,8 @@ char *read_line(void)
 	{
 		if (feof(stdin))
 		{
-			exit(1);
+			printf("Desconectado del terminal ...\n");
+			exit(EXIT_SUCCESS);
 		}
 		else
 		{

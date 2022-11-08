@@ -2,13 +2,12 @@
 
 char **_strtok(char *av)
 {
-	char *token1, *str;
+	char *token1;
 	char **save;
 	int buf_size;
 	int i = 0;
 
 	buf_size = 1024;
-	str = "\t\n\r\a";
 	save = malloc(buf_size * sizeof(char*));
 	if (save == NULL)
 	{
@@ -16,7 +15,7 @@ char **_strtok(char *av)
 		return (NULL);
 	}
 
-	token1 = strtok(av, str);
+	token1 = strtok(av, " \n");
 	while (token1 != NULL)
 	{
 		save[i] = token1;
@@ -32,7 +31,7 @@ char **_strtok(char *av)
 				return (NULL);
 			}
 		}
-		token1 = strtok(NULL, str);
+		token1 = strtok(NULL, " \n");
 	}
 	save[i] = NULL;
 	return (save);
