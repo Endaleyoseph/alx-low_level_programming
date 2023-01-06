@@ -2,12 +2,15 @@
 
 /**
  * create_item - creats an item
+ * @ht: hash table
  * @key: the key
  * @value: the value associated with the key
- * Return: pointer to the item
+ * @idx: the index at which the item is created
+ * Return: 1 if successful, 0 if failed
  */
 
-hash_node_t *create_item(const char *key, const char *value)
+int create_item(hash_table_t *ht, const char *key, const char *value,
+		unsigned long int idx)
 {
 	hash_node_t *item;
 	char *k;
@@ -15,12 +18,12 @@ hash_node_t *create_item(const char *key, const char *value)
 
 	item = malloc(sizeof(hash_node_t));
 	if (item == NULL)
-		return (NULL);
+		return (0);
 	k = strdup(key);
 	if (!k)
 	{
 		free(item);
-		return (NULL);
+		return (0);
 	}
 
 	v = strdup(value);
@@ -28,14 +31,18 @@ hash_node_t *create_item(const char *key, const char *value)
 	{
 		free(k);
 		free(item);
-		return (NULL);
+		return (0);
 	}
 
 	item->key = k;
 	item->value = v;
-	item->next = NULL;
+	if ((ht->array)[idx] == NULL)
+		item->next = NULL;
+	else
+		item->next = ht->array[idx];
+	ht->array[idx] = item;
 
-	return (item);
+	return (1);
 }
 
 /**
@@ -49,8 +56,7 @@ hash_node_t *create_item(const char *key, const char *value)
 int hash_table_set(hash_table_t *ht, const char *key, const char *value)
 {
 	unsigned long int index;
-	hash_node_t *item, *tmp;
-	hash_node_t *new = NULL;
+	hash_node_t *item = NULL;
 	char *v;
 
 	if (!ht || !(ht->array) || !key || strlen(key) == 0 || !value)
@@ -58,29 +64,17 @@ int hash_table_set(hash_table_t *ht, const char *key, const char *value)
 
 	index = key_index((const unsigned char *)key, ht->size);
 	item = ht->array[index];
-	tmp = ht->array[index];
-	if (item == NULL)
+	while (item && (strcmp(key, item->key) != 0))
+		item = item->next;
+	if (item != NULL)
 	{
-		ht->array[index] = create_item(key, value);
+		v = strdup(value);
+		if (!v)
+			return (0);
+		if (item->value)
+			free(item->value);
+		item->value = v;
 		return (1);
 	}
-	else
-	{
-		while (item != NULL && (strcmp(key, item->key) != 0))
-			item = item->next;
-		if (item != NULL)
-		{
-			v = strdup(value);
-			if (item->value)
-				free(item->value);
-			item->value = v;
-			return (1);
-		}
-		while (tmp->next != NULL)
-			tmp = tmp->next;
-		new = create_item(key, value);
-		tmp->next = new;
-		return (1);
-	}
-	return (0);
+	return (create_item(ht, key, value, index));
 }
