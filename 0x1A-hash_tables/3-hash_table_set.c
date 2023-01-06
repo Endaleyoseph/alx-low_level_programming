@@ -10,19 +10,29 @@
 hash_node_t *create_item(const char *key, const char *value)
 {
 	hash_node_t *item;
+	char *k;
+	char *v;
 
 	item = malloc(sizeof(hash_node_t));
 	if (item == NULL)
 		return (NULL);
-	item->key = malloc(sizeof(char) * strlen(key) + 1);
-	if (item->key == NULL)
+	k = strdup(key);
+	if (!k)
+	{
+		free(item);
 		return (NULL);
-	item->value = malloc(sizeof(char) * strlen(value) + 1);
-	if (item->value == NULL)
-		return (NULL);
+	}
 
-	strcpy(item->key, key);
-	strcpy(item->value, value);
+	v = strdup(value);
+	if (!v)
+	{
+		free(k);
+		free(item);
+		return (NULL);
+	}
+
+	item->key = k;
+	item->value = v;
 	item->next = NULL;
 
 	return (item);
@@ -43,7 +53,7 @@ int hash_table_set(hash_table_t *ht, const char *key, const char *value)
 	hash_node_t *new = NULL;
 	char *v;
 
-	if (key[0] == '\0')
+	if (!ht || !(ht->array) || !key || strlen(key) == 0 || !value)
 		return (0);
 
 	index = key_index((const unsigned char *)key, ht->size);
